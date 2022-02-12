@@ -62,12 +62,11 @@ Created on Thu Feb 10 23:54:49 2022
 
 import numpy as np
 import struct
-import matplotlib.pyplot as plt
 
 def read_idx1_ubyte(idx1_ubyte_file):
     """
     require:address of idx1 ubyte file
-    ensure: a list of labels
+    ensure: vector of labels
     """
     
     bin_data = open(idx1_ubyte_file, 'rb').read()
@@ -80,9 +79,9 @@ def read_idx1_ubyte(idx1_ubyte_file):
 
     #read label information
     offset += struct.calcsize(fmt_head)
-    print(offset)
+    #print(offset)
     fmt_label = '>B'   #format of labels '>B'
-    labels = np.empty(num_items)
+    labels = np.empty(num_items, dtype = np.uint8)
     for i in range(num_items):
         if (i + 1) % 10000 == 0:
             print ("have read %d labels" % (i + 1))
@@ -91,7 +90,7 @@ def read_idx1_ubyte(idx1_ubyte_file):
         offset += struct.calcsize(fmt_label)
     
     print("read successfully")
-    print(labels)
+    #print(labels)
     
     return labels
 
@@ -100,7 +99,7 @@ def read_idx1_ubyte(idx1_ubyte_file):
 def read_idx3_ubyte(idx3_ubyte_file):
     """
     require:address of idx3 ubyte file
-    ensure: a matrix of images(number of images * size of image)
+    ensure: matrix of images(number of images * size of image)
     """
     
     bin_data = open(idx3_ubyte_file, 'rb').read()
@@ -109,13 +108,13 @@ def read_idx3_ubyte(idx3_ubyte_file):
     offset = 0
     fmt_head = ">iiii" #format of head(4 integers)
     magic_number, num_images, num_rows, num_cols = struct.unpack_from(fmt_head, bin_data, offset)
-    print ("magic number: %d, number of images: %d, size of image: %d*%d" % (magic_number, num_images, num_rows, num_cols) )
+    print ("magic number: %d, number of images: %d, image size: %d*%d" % (magic_number, num_images, num_rows, num_cols) )
 
     #read image information
-    size_image = num_rows * num_cols
+    image_size = num_rows * num_cols
     offset += struct.calcsize(fmt_head)
-    fmt_image = '>' + str(size_image) + 'B'   #format of images '>784B'
-    images = np.empty((num_images, size_image))
+    fmt_image = '>' + str(image_size) + 'B'   #format of images '>784B'
+    images = np.empty((num_images, image_size), dtype = np.uint8)
     for i in range(num_images):
         if (i + 1) % 10000 == 0:
             print ("have read %d images" % (i + 1))
@@ -123,20 +122,20 @@ def read_idx3_ubyte(idx3_ubyte_file):
         offset += struct.calcsize(fmt_image)
     
     print("read successfully")
-    print(images)
+    #print(images)
     #print(np.shape(images))
     
     return images
 
-read_idx3_ubyte("./data/t10k-images.idx3-ubyte")
+#read_idx3_ubyte("./data/t10k-images.idx3-ubyte")
 
-def load_training_images(idx3_ubyte_file = "./data/train-images.idx3-ubyte"):
+def load_train_images(idx3_ubyte_file = "./data/train-images.idx3-ubyte"):
     return read_idx3_ubyte(idx3_ubyte_file)
 
 def load_test_images(idx3_ubyte_file = "./data/t10k-images.idx3-ubyte"):
     return read_idx3_ubyte(idx3_ubyte_file)
 
-def load_training_labels(idx1_ubyte_file = "./data/train-labels.idx1-ubyte"):
+def load_train_labels(idx1_ubyte_file = "./data/train-labels.idx1-ubyte"):
     return read_idx1_ubyte(idx1_ubyte_file)
 
 def load_test_labels(idx1_ubyte_file = "./data/t10k-labels.idx1-ubyte"):
@@ -144,8 +143,10 @@ def load_test_labels(idx1_ubyte_file = "./data/t10k-labels.idx1-ubyte"):
 
 #test
 if __name__ == '__main__':
-    train_images = load_training_images() 
-    train_labels = load_training_labels()
+    import matplotlib.pyplot as plt
+    
+    train_images = load_train_images() 
+    train_labels = load_train_labels()
     test_images = load_test_images()
     test_labels = load_test_labels()
     
