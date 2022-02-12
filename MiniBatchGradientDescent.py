@@ -11,6 +11,7 @@ import Forward
 import Backward
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 def mini_batch_gradient_descent(train_images, train_labels, gamma0, num_epoches, mini_batch_size, layers_size):
     """
@@ -90,6 +91,28 @@ def score(parameters, test_images, test_labels):
     
     return np.mean(np.equal(np.argmax(predictions, axis = 1), np.argmax(labels_oh, axis = 1)))
 
+def illustrate_predictions(num_exemples, parameters, test_images):
+    """"
+    requir: number of exemples
+    requir: list of parameters
+    requir: matrix of test images
+    ensure: illustrate some exemples of predictions
+    """
+    images_n = PreProcess.normalize(test_images)
+    
+    id_exemples = np.random.choice(np.shape(test_images)[0], size = num_exemples, replace = False)
+    
+    size_subplot = math.ceil(math.sqrt(num_exemples))
+    
+    for i in range(num_exemples):
+        plt.subplot(size_subplot,size_subplot,i + 1)
+        interal_variables, predictions = Forward.forward(images_n[id_exemples[i],:], parameters)
+        plt.title("predition: "+ str(np.argmax(predictions)))
+        plt.imshow(test_images[id_exemples[i],:].reshape(28,28), cmap='gray')
+    
+    plt.show()
+    return
+
 #test
 if __name__ == '__main__':
     import LoadData
@@ -101,10 +124,10 @@ if __name__ == '__main__':
     #layers size(with 2 hidden layers in this exemple)
     layers_size = [784,30,20,10]
     
-    train_images = LoadData.load_train_images()[:6000,:]
-    train_labels = LoadData.load_train_labels()[:6000]
-    test_images = LoadData.load_test_images()[:1000,:]
-    test_labels = LoadData.load_test_labels()[:1000]
+    train_images = LoadData.load_train_images()[:60000,:]
+    train_labels = LoadData.load_train_labels()[:60000]
+    test_images = LoadData.load_test_images()[:10000,:]
+    test_labels = LoadData.load_test_labels()[:10000]
     
     parameters, L_loss = mini_batch_gradient_descent(train_images, train_labels, gamma0, num_epoches, mini_batch_size, layers_size)
     
@@ -113,3 +136,5 @@ if __name__ == '__main__':
     plot_loss(L_loss)
     
     print("accuracy score is",score(parameters, test_images, test_labels))
+    
+    illustrate_predictions(16, parameters, test_images)

@@ -49,9 +49,14 @@ def softmax(Z):
     requir: matrix Z
     ensure: matrix y so that y = softmax(O)
     """
-    y = np.empty((np.shape(Z)[0],np.shape(Z)[1]))
-    for i in range(np.shape(Z)[0]):
-        y[i] = np.exp(Z[i]) / np.sum(np.exp(Z[i]))
+    if(np.ndim(Z) == 2):
+        y = np.empty((np.shape(Z)[0],np.shape(Z)[1]))
+        for i in range(np.shape(Z)[0]):
+            y[i] = np.exp(Z[i]) / np.sum(np.exp(Z[i]))
+    else:
+        y = np.empty(np.shape(Z)[0])
+        y = np.exp(Z) / np.sum(np.exp(Z))
+
     return y
 
 #test
