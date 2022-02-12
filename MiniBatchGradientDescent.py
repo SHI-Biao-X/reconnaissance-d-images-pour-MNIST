@@ -119,7 +119,7 @@ if __name__ == '__main__':
     import PreProcess
     
     gamma0 = 0.05
-    num_epoches = 1000
+    num_epoches = 3000
     mini_batch_size = 64
     #layers size(with 2 hidden layers in this exemple)
     layers_size = [784,30,20,10]

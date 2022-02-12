@@ -1,8 +1,0 @@
-model:
-initial learning rate: 0.05
-number of epoches: 1000 
-layers size: input layer size of 784, two hidden layers size of 30 and 20, output layer size of 10
-
-result:
-final crossing entrogy loss: 0.001066
-accuracy score is 0.9453
